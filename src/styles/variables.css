@@ -1,0 +1,172 @@
+/* root Layout */
+:root {
+  /* -- surfaces -- */
+  --color-bg: #0d0906;
+  --color-bg-soft: #171009;
+  --color-header: #1e1e1e;
+
+  /* border */
+  --color-border: #000000;
+
+  /* -- text -- */
+  --color-text: #e9e9e9;
+  --color-text-muted: #ada69e;
+  --color-text-dim: #6f665a;
+
+  /* -- brand / accent states (mirrors the button asset set) -- */
+  --color-primary: #ffb020; /* active nav / primary CTA — gold */
+  --color-danger: #ff4d4f; /* destructive actions */
+  --color-pink: #ff5cc8;
+  --color-warning: #ff9d2e;
+  --color-info: #45c8ff;
+  --color-success: #6bcf6b;
+
+  /* -- typography -- */
+  --font-pixel: "Minecraft Five", "Minecraftia", monospace;
+
+  /* -- layout -- */
+  --header-height: 64px;
+
+  /* btns */
+  --btn-bg-default: url("../assets/buttons/default-button.png");
+  --btn-bg-default-hover: url("../assets/buttons/default-button-highlight.png");
+
+  --btn-bg-primary: url("../assets/buttons/primary-button.png");
+  --btn-bg-primary-hover: url("../assets/buttons/primary-button-highlight.png");
+  --btn-bg-primary-active: url("../assets/buttons/primary-button-highlight.png");
+  --btn-bg-primary-focus: url("../assets/buttons/primary-button-focus.png");
+
+  --btn-bg-danger: url("../assets/buttons/danger-button.png");
+  --btn-bg-danger-hover: url("../assets/buttons/danger-button-highlight.png");
+  --btn-bg-danger-focus: url("../assets/buttons/danger-button-focus.png");
+
+  --btn-bg-pink: url("../assets/buttons/pink-button.png");
+  --btn-bg-pink-hover: url("../assets/buttons/pink-button-highlight.png");
+  --btn-bg-pink-focus: url("../assets/buttons/pink-button-focus.png");
+
+  --btn-bg-warning-hover: url("../assets/buttons/warning-button-highlight.png");
+  --btn-bg-warning-focus: url("../assets/buttons/warning-button-focus.png");
+
+  --btn-bg-info: url("../assets/buttons/info-button-highlight.png");
+  --btn-bg-info-hover: url("../assets/buttons/info-button-highlight-hover.png");
+
+  --btn-bg-success: url("../assets/buttons/success-button-highlight.png");
+}
+
+.gradient-text {
+  --nav-grad-top: #e9e9e9;
+  --nav-grad-bottom: #999;
+
+  background-image: linear-gradient(
+    var(--nav-grad-top) 55%,
+    var(--nav-grad-bottom) 50%
+  ) !important;
+  background-size: 100% 1.2em !important;
+  background-repeat: repeat-y !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  transition: background-image 0.2s ease;
+}
+.gold-gradient-text {
+  --nav-grad-top: #ffc02e;
+  --nav-grad-bottom: #dd7f06;
+
+  background-image: linear-gradient(
+    var(--nav-grad-top) 50%,
+    var(--nav-grad-bottom) 50%
+  ) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  transition: background-image 0.2s ease;
+}
+.silver-gradient-text {
+  --nav-grad-top: #eef0f4;
+  --nav-grad-bottom: #9297a3;
+  background-image: linear-gradient(
+    var(--nav-grad-top) 55%,
+    var(--nav-grad-bottom) 45%
+  ) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  transition: background-image 0.2s ease;
+}
+
+.bronze-gradient-text {
+  --nav-grad-top: #e8a765;
+  --nav-grad-bottom: #96541c;
+  background-image: linear-gradient(
+    var(--nav-grad-top) 55%,
+    var(--nav-grad-bottom) 45%
+  ) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  transition: background-image 0.2s ease;
+}
+.green-gradient-text {
+  --nav-grad-top: #6fcb6b;
+  --nav-grad-bottom: #2a9328;
+
+  background-image: linear-gradient(
+    var(--nav-grad-top) 55%,
+    var(--nav-grad-bottom) 45%
+  ) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  transition: background-image 0.2s ease;
+}
+.info-gradient-text {
+  --nav-grad-top: #35c2fc;
+  --nav-grad-bottom: #00769d;
+
+  background-image: linear-gradient(
+    var(--nav-grad-top) 55%,
+    var(--nav-grad-bottom) 45%
+  ) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  transition: background-image 0.2s ease;
+}
+
+.pixel-btn {
+  border-style: solid;
+  border-width: 6px;
+  border-color: transparent;
+  box-sizing: border-box;
+  image-rendering: pixelated;
+  border-image-repeat: stretch;
+  border-image-width: 21px;
+  border-image-slice: 20 fill;
+  border-image-source: var(--btn-bg);
+}
+
+.pixel-btn:hover {
+  border-image-source: var(--btn-bg-hover);
+}
+
+.pixel-btn:focus-visible {
+  border-image-source: var(--btn-bg-focus);
+  outline: none;
+}
+
+.title {
+  font-size: clamp(2px, 4vw, 35px);
+  text-align: center;
+}
+.p{
+  font-size: clamp(1px, 2.5vw, 15px);
+  color: var(--color-text-muted);
+  margin-top: 1px;
+  text-align: center;
+}

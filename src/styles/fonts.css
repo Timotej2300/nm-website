@@ -1,0 +1,21 @@
+/* Fonts */
+@font-face {
+  font-family: "Minecraft Five";
+  src: url("/fonts/font-primary-regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: "Minecraft Five";
+  src: url("/fonts/font-primary-bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: "Minecraftia";
+  src: url("/fonts/minecraftia.woff") format("woff");
+  font-weight: 400;
+  font-display: optional;
+}

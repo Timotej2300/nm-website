@@ -1,0 +1,176 @@
+// src/Data/news.js
+// ─────────────────────────────────────────────────────────────
+// Single source of truth for all news/blog posts.
+// Used by:
+//   - components/landing/LatestNews/LatestNews.jsx (homepage teaser cards)
+//   - pages/News.jsx (full news listing page)
+//   - pages/NewsDetail.jsx (single post detail page, /news/:slug)
+//
+// `content` powers the detail page body. Each block is one of:
+//   { type: "p",     text: "..." }
+//   { type: "h2",    text: "..." }
+//   { type: "list",  items: ["...", "..."] }
+// ─────────────────────────────────────────────────────────────
+
+export const newsPosts = [
+  {
+    slug: "survival-season-18-recap",
+    image:
+      "https://mcchampionship.com/data/thfeature/feature_backgrounds/0/153.jpg?1784199301",
+    category: "Update",
+    tone: "var(--color-danger)",
+    date: "Jan 20, 2026",
+    author: "BD Zone Team",
+    title: "Survival Season 18 — Recap",
+    excerpt:
+      "New crates, parkour challenges, an End run, and a wave of standout community builds — every highlight from the season.",
+    content: [
+      {
+        type: "p",
+        text: "Season 18 has officially wrapped, and it closes out as one of the busiest stretches the survival world has seen. Over ten weeks, the map filled up with bases, farms, and a few builds that genuinely stopped us in our tracks while reviewing entries for this recap.",
+      },
+      { type: "h2", text: "New This Season" },
+      {
+        type: "list",
+        items: [
+          "Three fresh crate tiers, each with its own pool of cosmetics and tools",
+          "A rebuilt parkour course spanning four difficulty stages",
+          "A fully scripted End dimension run with checkpoint rewards along the way",
+          "Weekly bonus-currency weekends to keep the grind interesting",
+        ],
+      },
+      {
+        type: "p",
+        text: "The End run in particular became a season highlight. Groups coordinated gear runs, split loot fairly, and more than one alliance formed purely out of surviving the same near-death encounter with the Ender Dragon.",
+      },
+      { type: "h2", text: "Community Builds" },
+      {
+        type: "p",
+        text: "The build showcase this season leaned heavily into medieval villages and floating islands, with a few players attempting full-scale redstone contraptions that took entire weekends to wire up correctly. Screenshots from the top builds are pinned in the community Discord.",
+      },
+      { type: "h2", text: "What's Next" },
+      {
+        type: "p",
+        text: "Planning for Season 19 is already underway, with the team looking at a fresh world seed, an overhauled shop system, and community feedback from this season's end-of-run survey. Keep an eye on the News page for the announcement.",
+      },
+    ],
+  },
+  {
+    slug: "ramadan-iftar-community-event",
+    image:
+      "https://mcchampionship.com/data/thfeature/feature_backgrounds/0/152.jpg?1782815866",
+    category: "Community",
+    tone: "var(--color-pink)",
+    date: "Mar 2, 2026",
+    author: "BD Zone Team",
+    title: "Ramadan Iftar Community Event",
+    excerpt:
+      "A limited-time seasonal event: farm crops, cook Iftar platters, and earn event currency to climb the leaderboard.",
+    content: [
+      {
+        type: "p",
+        text: "To mark the start of Ramadan, the server is running a limited-time community event centered around the Iftar table. It's less about combat and more about cooperation, farming, and cooking your way up the leaderboard.",
+      },
+      { type: "h2", text: "How It Works" },
+      {
+        type: "list",
+        items: [
+          "Harvest seasonal crops scattered around the event zone",
+          "Cook them into Iftar platters at any of the community kitchen stations",
+          "Turn in completed platters for event currency",
+          "Spend event currency at the seasonal shop before the event ends",
+        ],
+      },
+      {
+        type: "p",
+        text: "Platters can be cooked solo, but turn-in bonuses reward players who deliver as a group, so teaming up with friends or your build-team is the fastest way to climb.",
+      },
+      { type: "h2", text: "Leaderboard & Prizes" },
+      {
+        type: "p",
+        text: "The top finishers when the event closes will walk away with a mix of in-game currency and permanent cosmetic rewards, with the top three receiving an exclusive event-only tag visible on the leaderboard for the rest of the year.",
+      },
+      {
+        type: "p",
+        text: "The event runs for the full month, so there's no need to rush — steady turn-ins add up. Full event rules are posted on the community Discord's announcements channel.",
+      },
+    ],
+  },
+  {
+    slug: "season-18-leaderboards-final-results",
+    image:
+      "https://mcchampionship.com/data/thfeature/feature_backgrounds/0/146.jpg?1774360568",
+    category: "Update",
+    tone: "var(--color-danger)",
+    date: "Jan 16, 2026",
+    author: "BD Zone Team",
+    title: "Season 18 Leaderboards — Final Results",
+    excerpt:
+      "The final standings are locked in, closing out a season defined by grinders, builders, and everyone who showed up.",
+    content: [
+      {
+        type: "p",
+        text: "With Season 18 at a close, the final leaderboard standings are locked in. It was a tightly contested season across every category, with the top spots changing hands right up until the final reset.",
+      },
+      { type: "h2", text: "Top Grinders" },
+      {
+        type: "p",
+        text: "The playtime and currency leaderboards came down to the wire, with the top three players separated by only a few hours of logged playtime in the final week.",
+      },
+      { type: "h2", text: "Top Builders" },
+      {
+        type: "p",
+        text: "The build-vote category saw record participation this season, with community voting deciding the top three showcase entries that will be featured on the server spawn for Season 19.",
+      },
+      { type: "h2", text: "Season Rewards" },
+      {
+        type: "list",
+        items: [
+          "Top 10 overall: exclusive season-18 cosmetic set",
+          "Top 3 builders: permanent spawn showcase placement",
+          "All active participants: a commemorative season badge",
+        ],
+      },
+      {
+        type: "p",
+        text: "Thank you to everyone who logged in, farmed, built, and competed this season. Rewards are being distributed automatically — reach out on Discord if anything looks off in your inventory.",
+      },
+    ],
+  },
+  {
+    slug: "server-launch",
+    image:
+      "https://mcchampionship.com/data/thfeature/feature_backgrounds/0/140.jpg?1762012345",
+    category: "Announcement",
+    tone: "var(--color-info)",
+    date: "Jul 5, 2021",
+    author: "BD Zone Team",
+    title: "Server Launch",
+    excerpt:
+      "A brand-new survival world opens its gates — build, trade, explore, and dive into community events in a friendly, welcoming setting from day one.",
+    content: [
+      {
+        type: "p",
+        text: "The gates are open. After weeks of testing, the very first survival world is live, and everyone is welcome to jump in from day one.",
+      },
+      { type: "h2", text: "What to Expect" },
+      {
+        type: "list",
+        items: [
+          "A fresh survival world with no head start for anyone",
+          "Player shops and a community trading hall near spawn",
+          "Regular community events starting in the first week",
+          "An active, friendly staff team ready to help new players",
+        ],
+      },
+      {
+        type: "p",
+        text: "Whether you're here to build, grind, or just hang out and chat, there's a place for you. Say hello in the community Discord and let us know what you'd like to see as the server grows.",
+      },
+    ],
+  },
+];
+
+export function getPostBySlug(slug) {
+  return newsPosts.find((post) => post.slug === slug);
+}

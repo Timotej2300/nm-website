@@ -1,0 +1,12 @@
+css
+.pixel-panel {
+  border-style: solid;
+  border-width: 10px;
+  border-image-slice: 22;              /* "fill" বাদ */
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  border-image-source: var(--panel-bg);
+  background-color: var(--panel-face, #1a1208); /* asset-এর middle color */
+  background-clip: padding-box;
+  padding: 20px;
+}
