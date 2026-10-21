@@ -72,3 +72,13 @@ export function BootScreen() {
     </div>
   );
 }
+
+export function ServerErrorScreen({ message, onRetry }) {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 px-4 text-center">
+      <h1 className="text-[18px] gold-gradient-text">Server je nedostupný</h1>
+      <p className="max-w-md text-[12px] leading-relaxed text-(--color-text-muted)">{message || "Nepodarilo sa spojiť so serverom."} Skontrolujte, že je nastavená databáza a spustené migrácie.</p>
+      <button type="button" onClick={onRetry} className="rounded-sm border border-white/15 px-4 py-2 text-[12px] text-(--color-text) hover:bg-white/5">Skúsiť znova</button>
+    </div>
+  );
+}

@@ -2,7 +2,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import { useAuth } from "../context/useAuth";
-import { BootScreen, MaintenanceScreen, UnavailableScreen } from "../components/guards/Screens";
+import { BootScreen, MaintenanceScreen, ServerErrorScreen, UnavailableScreen } from "../components/guards/Screens";
 
 // Reachable without being signed in.
 const PUBLIC_PATHS = ["/login", "/forgot-password", "/reset-password", "/verify-email"];
@@ -16,12 +16,14 @@ function pageKeyFor(pathname) {
 }
 
 export default function RootLayout() {
-  const { user, site, loading, can } = useAuth();
+  const { user, site, siteError, loading, can, refreshSite } = useAuth();
   const location = useLocation();
   const isPublic = PUBLIC_PATHS.includes(location.pathname);
 
   let content;
-  if (loading || !site) {
+  if (!site && siteError) {
+    content = <ServerErrorScreen message={siteError} onRetry={refreshSite} />;
+  } else if (loading || !site) {
     content = <BootScreen />;
   } else if (!user && !isPublic) {
     // Direct URL opens land here too: no session -> login, then back to where they were going.
