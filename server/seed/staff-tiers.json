@@ -1,0 +1,18 @@
+[
+  {
+    "key": "owner",
+    "label": "Owner"
+  },
+  {
+    "key": "admin",
+    "label": "Administrator"
+  },
+  {
+    "key": "moderator",
+    "label": "Moderator"
+  },
+  {
+    "key": "helper",
+    "label": "Helper & Builder"
+  }
+]

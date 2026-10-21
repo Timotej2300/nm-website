@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Gamepad2, Menu, X } from "lucide-react";
+import { Gamepad2, LogOut, Menu, X } from "lucide-react";
 import Logo from "./Logo";
 import NavButton from "./NavButton";
 import { navItems } from "./navItems";
 import PixelButton from "../ui/PixelButton";
 import { useCart } from "../../context/useCart";
+import { useAuth } from "../../context/useAuth";
 import cartIcon from "../../assets/icons/cart.png";
 
 function CartBadge({ count, className = "top-1.5 right-1.5" }) {
@@ -24,6 +25,10 @@ export default function Header() {
   const location = useLocation();
   const [lastPath, setLastPath] = useState(location.pathname);
   const { count } = useCart();
+  const { user, logout } = useAuth();
+  const items = user
+    ? [...navItems, ...(user.isStaff ? [{ to: "/admin", label: "Admin" }] : [])]
+    : navItems;
 
   // close the mobile panel whenever the route changes (derived during render,
   // see https://react.dev/learn/you-might-not-need-an-effect)
@@ -41,7 +46,7 @@ export default function Header() {
             className="hidden items-stretch min-[1080px]:flex"
             aria-label="Primary"
           >
-            {navItems.map((item) => (
+            {items.map((item) => (
               <NavButton key={item.to} {...item} />
             ))}
           </nav>
@@ -61,21 +66,31 @@ export default function Header() {
             <CartBadge count={count} />
           </Link>
 
-          <Link to={'/login'}>
-            <PixelButton
-              tone="success"
-              size="lg"
-              icon={Gamepad2}
-              className="shrink-0 px-4!"
-              textClassName="gradient-text"
-              textStyle={{
-                "--nav-grad-top": "#6fcb6b",
-                "--nav-grad-bottom": "#2a9328",
-              }}
-            >
-              Sign in with Xbox
-            </PixelButton>
-          </Link>
+          {user ? (
+            <>
+              <Link to="/account" className="flex items-center gap-2 px-1 text-[12px] text-(--color-text) hover:text-(--color-primary)" aria-label="Môj účet">
+                <img src={user.avatar} alt="" className="h-7 w-7 rounded-sm [image-rendering:pixelated]" />
+                <span className="max-w-28 truncate">{user.name}</span>
+              </Link>
+              <PixelButton tone="neutral" size="lg" icon={LogOut} className="shrink-0 px-3!" aria-label="Odhlásiť sa" onClick={logout} />
+            </>
+          ) : (
+            <Link to="/login">
+              <PixelButton
+                tone="success"
+                size="lg"
+                icon={Gamepad2}
+                className="shrink-0 px-4!"
+                textClassName="gradient-text"
+                textStyle={{
+                  "--nav-grad-top": "#6fcb6b",
+                  "--nav-grad-bottom": "#2a9328",
+                }}
+              >
+                Prihlásiť sa
+              </PixelButton>
+            </Link>
+          )}
         </div>
 
         <button
@@ -99,7 +114,7 @@ export default function Header() {
       >
         <div className="min-h-0">
           <nav className="flex flex-col" aria-label="Primary mobile">
-            {navItems.map((item) => (
+            {items.map((item) => (
               <NavButton
                 key={item.to}
                 {...item}
@@ -124,20 +139,34 @@ export default function Header() {
             </span>
           </Link>
 
-          <div className="px-4 py-4">
-            <PixelButton
-              tone="success"
-              filled
-              icon={Gamepad2}
-              className="h-14 w-full"
-              textClassName="gradient-text"
-              textStyle={{
-                "--nav-grad-top": "#6fcb6b",
-                "--nav-grad-bottom": "#2a9328",
-              }}
-            >
-              Sign in with Xbox
-            </PixelButton>
+          <div className="flex flex-col gap-3 px-4 py-4">
+            {user ? (
+              <>
+                <Link to="/account" onClick={() => setOpen(false)} className="flex items-center gap-2 text-[14px]">
+                  <img src={user.avatar} alt="" className="h-8 w-8 rounded-sm [image-rendering:pixelated]" />
+                  <span className="gradient-text">{user.name}</span>
+                </Link>
+                <PixelButton tone="neutral" icon={LogOut} className="h-14 w-full" onClick={() => { setOpen(false); logout(); }}>
+                  Odhlásiť sa
+                </PixelButton>
+              </>
+            ) : (
+              <Link to="/login" onClick={() => setOpen(false)}>
+                <PixelButton
+                  tone="success"
+                  filled
+                  icon={Gamepad2}
+                  className="h-14 w-full"
+                  textClassName="gradient-text"
+                  textStyle={{
+                    "--nav-grad-top": "#6fcb6b",
+                    "--nav-grad-bottom": "#2a9328",
+                  }}
+                >
+                  Prihlásiť sa
+                </PixelButton>
+              </Link>
+            )}
           </div>
         </div>
       </div>

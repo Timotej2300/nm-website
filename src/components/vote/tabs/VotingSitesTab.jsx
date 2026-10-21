@@ -57,17 +57,17 @@ export default function VotingSitesTab() {
       </h2>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {sites.map(({ id, name, href }) => (
+        {sites.map(({ key: id, name, href }) => (
           <PixelBox
             key={id}
             tone="primary"
             contentClassName="flex flex-col items-center gap-3 text-center"
           >
-            <img
+            {LOGOS[id] && <img
               src={LOGOS[id]}
               alt={name}
               className="h-8 w-8 object-contain [image-rendering:pixelated]"
-            />
+            />}
             <span className="text-[12.5px] gradient-text">{name}</span>
             <PixelButton
               tone="primary"

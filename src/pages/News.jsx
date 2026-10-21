@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { Calendar, ArrowRight } from "lucide-react";
 import PixelBox from "../components/ui/PixelBox";
 import PixelButton from "../components/ui/PixelButton";
-import { newsPosts } from "../data/news";
+import { useApi } from "../hooks/useApi";
+import { EmptyState, ErrorBox, Loading } from "../components/ui/Form";
 import { useSeo } from "../hooks/useSeo";
 
 export default function News() {
@@ -12,6 +13,8 @@ export default function News() {
       "Season recaps, community events, and every announcement from the BDZONE Minecraft server.",
     path: "/news",
   });
+  const { data, error, loading, reload } = useApi("/news?limit=50");
+  const newsPosts = data?.posts || [];
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 s">
       <h1 className="title gold-gradient-text">Latest News</h1>
@@ -19,6 +22,9 @@ export default function News() {
         Events, season recaps, and everything happening around the server.
       </p>
 
+      {loading && <Loading />}
+      {error && <ErrorBox message={error} onRetry={reload} />}
+      {data && newsPosts.length === 0 && <EmptyState title="Zatiaľ žiadne novinky" text="Novinky sa tu objavia, len čo ich tím zverejní." />}
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {newsPosts.map(
           ({ slug, image, category, tone, date, title, excerpt }) => (
@@ -29,11 +35,11 @@ export default function News() {
               className="overflow-hidden transition-transform hover:-translate-y-1"
             >
               <div className=" w-full overflow-hidden bg-(--color-bg-soft)">
-                <img
+                {image && <img
                   src={image}
                   alt={title}
                   className="h-full w-full object-cover [image-rendering:pixelated]"
-                />
+                />}
               </div>
 
               <div className="flex flex-col gap-3 p-4">

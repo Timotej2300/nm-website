@@ -1,7 +1,9 @@
 import { Crown, ShieldCheck, Gavel, Hammer, MessageCircle, Sparkles } from "lucide-react";
 import PixelBox from "../components/ui/PixelBox";
-import PixelButton from "../components/ui/PixelButton";
-import { STAFF, STAFF_TIERS } from "../data/staff";
+import { fetchStaff } from "../data/staff";
+import { useEffect, useState } from "react";
+import { EmptyState, ErrorBox, Loading } from "../components/ui/Form";
+import { errorMessage } from "../lib/api";
 import { avatarUrl } from "../data/votes";
 import { useSeo } from "../hooks/useSeo";
 
@@ -35,16 +37,14 @@ const TIER_STYLE = {
   },
 };
 
-function StatusDot({ online, size = "h-3 w-3" }) {
-  return (
-    <span
-      className={`absolute -right-0.5 -bottom-0.5 ${size} rounded-full border-2 border-(--color-bg) ${
-        online ? "bg-(--color-success)" : "bg-(--color-text-dim)"
-      }`}
-      title={online ? "Online" : "Offline"}
-    />
-  );
-}
+// Real-time online status is not available (no server link), so no status dot is shown.
+const FALLBACK_STYLE = {
+  tone: "neutral",
+  textClass: "gold-gradient-text",
+  badgeClass: "bg-white/10 text-(--color-text-muted)",
+  icon: Hammer,
+};
+const avatarFor = (m, size) => m.avatar || avatarUrl(m.username, size);
 
 function RoleBadge({ role, badgeClass }) {
   return (
@@ -57,6 +57,7 @@ function RoleBadge({ role, badgeClass }) {
 }
 
 function DiscordTag({ handle }) {
+  if (!handle) return null;
   return (
     <span className="mt-1 flex items-center gap-1.5 rounded-sm bg-black/25 px-2.5 py-1 text-[10.5px] text-(--color-text-muted)">
       <MessageCircle size={11} />@{handle}
@@ -74,11 +75,10 @@ function SpotlightCard({ member, style }) {
     >
       <div className="relative shrink-0">
         <img
-          src={avatarUrl(member.username, 80)}
+          src={avatarFor(member, 80)}
           alt={member.username}
           className="h-20 w-20 rounded-sm ring-2 ring-black/40 [image-rendering:pixelated]"
         />
-        <StatusDot online={member.online} size="h-4 w-4" />
       </div>
       <div className="flex flex-col items-center gap-2 sm:items-start">
         <span className={`text-[18px] ${style.textClass}`}>{member.username}</span>
@@ -101,11 +101,10 @@ function MemberCard({ member, style }) {
     >
       <div className="relative">
         <img
-          src={avatarUrl(member.username, 56)}
+          src={avatarFor(member, 56)}
           alt={member.username}
           className="h-14 w-14 rounded-sm ring-1 ring-black/40 [image-rendering:pixelated]"
         />
-        <StatusDot online={member.online} />
       </div>
       <span className={`text-[13px] ${style.textClass}`}>{member.username}</span>
       <RoleBadge role={member.role} badgeClass={style.badgeClass} />
@@ -115,10 +114,10 @@ function MemberCard({ member, style }) {
   );
 }
 
-function TierSection({ tier, isFirst }) {
-  const style = TIER_STYLE[tier.key];
+function TierSection({ tier, isFirst, staff }) {
+  const style = TIER_STYLE[tier.key] || FALLBACK_STYLE;
   const Icon = style.icon;
-  const members = STAFF.filter((m) => m.tier === tier.key);
+  const members = staff.filter((m) => m.tier === tier.key);
   if (members.length === 0) return null;
 
   return (
@@ -152,7 +151,14 @@ export default function Staff() {
     path: "/staff",
   });
 
-  const onlineCount = STAFF.filter((m) => m.online).length;
+  const [state, setState] = useState({ loading: true, error: null, tiers: [], members: [] });
+  useEffect(() => {
+    let alive = true;
+    fetchStaff()
+      .then((d) => alive && setState({ loading: false, error: null, tiers: d.tiers, members: d.members }))
+      .catch((e) => alive && setState({ loading: false, error: errorMessage(e), tiers: [], members: [] }));
+    return () => { alive = false; };
+  }, []);
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
@@ -161,13 +167,14 @@ export default function Staff() {
         The people building, running, and moderating BDZONE — say hi if you
         spot us in-game or on Discord.
       </p>
-      <p className="mt-1 text-center text-[11px] text-(--color-text-dim)">
-        <span className="text-(--color-success)">●</span> {onlineCount} of{" "}
-        {STAFF.length} team members online right now
-      </p>
+      {state.loading && <Loading />}
+      {state.error && <ErrorBox message={state.error} />}
+      {!state.loading && !state.error && state.members.length === 0 && (
+        <EmptyState title="Tím sa zatiaľ nezverejnil" text="Členovia tímu sa tu zobrazia po pridaní v administrácii." />
+      )}
 
-      {STAFF_TIERS.map((tier, i) => (
-        <TierSection key={tier.key} tier={tier} isFirst={i === 0} />
+      {state.tiers.map((tier, i) => (
+        <TierSection key={tier.key} tier={tier} isFirst={i === 0} staff={state.members} />
       ))}
 
       <PixelBox
@@ -181,9 +188,6 @@ export default function Staff() {
           We open staff applications every season. Active, helpful players
           get noticed first.
         </p>
-        <PixelButton tone="primary" size="sm" className="mt-1 px-4! py-4!">
-          <span className="gold-gradient-text ">Apply on Discord</span>
-        </PixelButton>
       </PixelBox>
     </section>
   );

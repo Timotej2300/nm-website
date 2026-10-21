@@ -31,15 +31,17 @@ function StatCard({ icon, value, label }) {
 
 export default function StoreOverview() {
   const [stats, setStats] = useState(null);
-  const [goal, setGoal] = useState(null);
+  const [goal, setGoal] = useState(undefined); // undefined = loading, null = no goal configured
 
   useEffect(() => {
     let isMounted = true;
     fetchStoreStats().then((data) => {
       if (isMounted) setStats(data);
-    });
+    }).catch(() => {});
     fetchMonthlyGoal().then((data) => {
       if (isMounted) setGoal(data);
+    }).catch(() => {
+      if (isMounted) setGoal(null);
     });
     return () => {
       isMounted = false;
@@ -47,10 +49,11 @@ export default function StoreOverview() {
   }, []);
 
   const pct = goal ? Math.min(100, (goal.current / goal.target) * 100) : 0;
+  const showGoal = goal !== null;
 
   return (
     <div>
-      <PixelBox
+      {showGoal && <PixelBox
         tone="success"
         className="mt-6"
         contentClassName="flex flex-col items-center gap-3 px-5! py-6! text-center sm:px-8!"
@@ -61,7 +64,7 @@ export default function StoreOverview() {
           </h2>
         </div>
 
-        {!goal && (
+        {goal === undefined && (
           <p className="mt-2 text-[15px] gold-gradient-text">Loading...</p>
         )}
 
@@ -93,12 +96,12 @@ export default function StoreOverview() {
             </div>
           </>
         )}
-      </PixelBox>
+      </PixelBox>}
       {stats && (
         <div className="mt-8 grid grid-cols-2 gap-4">
           <StatCard
             icon={totalVotes}
-            value={`৳${stats.totalRaised.toLocaleString()}`}
+            value={`${stats.currency || ""}${stats.totalRaised.toLocaleString()}`}
             label="TOTAL RAISED"
           />
           <StatCard

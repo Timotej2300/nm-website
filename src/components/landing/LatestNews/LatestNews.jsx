@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Calendar } from "lucide-react";
 import PixelBox from "../../ui/PixelBox";
 import PixelButton from "../../ui/PixelButton";
-import { newsPosts } from "../../../data/news";
-
-// Homepage teaser only shows the 3 most recent posts.
-const POSTS = newsPosts.slice(0, 3);
+import { useApi } from "../../../hooks/useApi";
 
 export default function LatestNews() {
+  // Homepage teaser only shows the 3 most recent posts.
+  const { data } = useApi("/news?limit=3");
+  const POSTS = (data?.posts || []).slice(0, 3);
+  if (data && POSTS.length === 0) return null;
   return (
     <section className="mx-auto max-w-7xl px-4 pt-25 sm:px-6">
       <div>
@@ -41,11 +42,11 @@ export default function LatestNews() {
             className="overflow-hidden transition-transform hover:-translate-y-1"
           >
             <div className=" w-full overflow-hidden bg-(--color-bg-soft)">
-              <img
+              {image && <img
                 src={image}
                 alt={title}
                 className="h-full w-full object-cover [image-rendering:pixelated]"
-              />
+              />}
             </div>
 
             <div className="flex flex-col gap-3 p-4">

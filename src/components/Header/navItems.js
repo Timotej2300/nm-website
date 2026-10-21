@@ -6,4 +6,5 @@ export const navItems = [
   { to: "/votes", label: "Vote" },
   { to: "/store", label: "Store" },
   { to: "/staff", label: "Staff" },
+  { to: "/tickets", label: "Tickets" },
 ];

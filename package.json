@@ -9,15 +9,25 @@
     "prebuild": "npm run sitemap",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:api": "node scripts/dev-server.mjs",
+    "migrate": "node scripts/migrate.mjs",
+    "seed": "node scripts/seed-content.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.2.2",
     "@tailwindcss/vite": "^4.3.3",
+    "@vercel/functions": "^3.10.1",
+    "bcryptjs": "^3.0.3",
     "lucide-react": "^1.25.0",
+    "mysql2": "^3.24.6",
+    "nodemailer": "^7.0.13",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

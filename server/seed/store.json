@@ -1,0 +1,253 @@
+{
+  "ranks": [
+    {
+      "key": "vip",
+      "name": "VIP",
+      "price": "$4.99",
+      "tone": "",
+      "usernameColor": "Green",
+      "perks": [
+        "Colored name tag",
+        "/hat and /kit vip",
+        "2 extra homes"
+      ],
+      "values": {
+        "chatIcon": true,
+        "priorityQueue": true,
+        "exclusiveKits": true,
+        "remoteWarpAccess": false,
+        "bulkSellAccess": false,
+        "disguiseAccess": false,
+        "rankColorChanger": false,
+        "joinAnnouncement": false,
+        "webstoreDiscount": 0,
+        "bonusVotePoints": 1,
+        "bonusCrateKeys": 1,
+        "bonusHomes": 2,
+        "bonusWarps": 0,
+        "bonusQuestRerolls": 0,
+        "bonusWeeklyQuests": 1
+      }
+    },
+    {
+      "key": "mvp",
+      "name": "MVP",
+      "price": "$9.99",
+      "tone": "primary",
+      "usernameColor": "Aqua",
+      "perks": [
+        "Everything in VIP",
+        "/fly in the lobby",
+        "5 extra homes",
+        "Priority queue"
+      ],
+      "featured": true,
+      "values": {
+        "chatIcon": true,
+        "priorityQueue": true,
+        "exclusiveKits": true,
+        "remoteWarpAccess": true,
+        "bulkSellAccess": true,
+        "disguiseAccess": true,
+        "rankColorChanger": false,
+        "joinAnnouncement": false,
+        "webstoreDiscount": 10,
+        "bonusVotePoints": 2,
+        "bonusCrateKeys": 3,
+        "bonusHomes": 5,
+        "bonusWarps": 2,
+        "bonusQuestRerolls": 1,
+        "bonusWeeklyQuests": 2
+      }
+    },
+    {
+      "key": "legend",
+      "name": "LEGEND",
+      "price": "$19.99",
+      "tone": "success",
+      "usernameColor": "Gold",
+      "perks": [
+        "Everything in MVP",
+        "Exclusive cosmetic set",
+        "Unlimited homes",
+        "Early access to new features"
+      ],
+      "values": {
+        "chatIcon": true,
+        "priorityQueue": true,
+        "exclusiveKits": true,
+        "remoteWarpAccess": true,
+        "bulkSellAccess": true,
+        "disguiseAccess": true,
+        "rankColorChanger": true,
+        "joinAnnouncement": true,
+        "webstoreDiscount": 20,
+        "bonusVotePoints": 3,
+        "bonusCrateKeys": 6,
+        "bonusHomes": "Unlimited",
+        "bonusWarps": 5,
+        "bonusQuestRerolls": 3,
+        "bonusWeeklyQuests": 3
+      }
+    }
+  ],
+  "rankPerkRows": [
+    {
+      "key": "chatIcon",
+      "label": "Special Chat Icon",
+      "type": "check"
+    },
+    {
+      "key": "priorityQueue",
+      "label": "Priority Queue",
+      "type": "check"
+    },
+    {
+      "key": "exclusiveKits",
+      "label": "Access to Exclusive Kits",
+      "type": "check"
+    },
+    {
+      "key": "remoteWarpAccess",
+      "label": "Remote Access to Player Warps",
+      "type": "check"
+    },
+    {
+      "key": "bulkSellAccess",
+      "label": "Bulk Sell & Auto-Sell Access",
+      "type": "check"
+    },
+    {
+      "key": "disguiseAccess",
+      "label": "Access to Disguises",
+      "type": "check"
+    },
+    {
+      "key": "rankColorChanger",
+      "label": "Nickname & Rank Color Changer",
+      "type": "check"
+    },
+    {
+      "key": "joinAnnouncement",
+      "label": "Server-wide Join Announcement",
+      "type": "check"
+    },
+    {
+      "key": "webstoreDiscount",
+      "label": "Discount on Future Webstore Purchases",
+      "type": "number",
+      "suffix": "%"
+    },
+    {
+      "key": "bonusVotePoints",
+      "label": "Bonus Vote Points (per vote)",
+      "type": "number"
+    },
+    {
+      "key": "bonusCrateKeys",
+      "label": "Bonus Crate Keys (monthly)",
+      "type": "number"
+    },
+    {
+      "key": "bonusHomes",
+      "label": "Bonus Home Locations",
+      "type": "number"
+    },
+    {
+      "key": "bonusWarps",
+      "label": "Bonus Player Warps",
+      "type": "number"
+    },
+    {
+      "key": "bonusQuestRerolls",
+      "label": "Bonus Daily Quest Rerolls",
+      "type": "number"
+    },
+    {
+      "key": "bonusWeeklyQuests",
+      "label": "Bonus Weekly Quests",
+      "type": "number"
+    }
+  ],
+  "crates": [
+    {
+      "key": "common",
+      "name": "Common Key",
+      "price": "$2.99",
+      "tone": "neutral",
+      "contents": [
+        "Basic cosmetics",
+        "Small currency boost",
+        "Common tools"
+      ]
+    },
+    {
+      "key": "rare",
+      "name": "Rare Key",
+      "price": "$6.99",
+      "tone": "info",
+      "contents": [
+        "Rare cosmetics",
+        "Mid-tier currency",
+        "Enchanted gear"
+      ]
+    },
+    {
+      "key": "epic",
+      "name": "Epic Key",
+      "price": "$12.99",
+      "tone": "primary",
+      "contents": [
+        "Epic cosmetics",
+        "Large currency boost",
+        "Exclusive pets"
+      ],
+      "featured": true
+    },
+    {
+      "key": "legendary",
+      "name": "Legendary Key",
+      "price": "$24.99",
+      "tone": "pink",
+      "contents": [
+        "Legendary cosmetics",
+        "Max currency boost",
+        "One-of-a-kind items"
+      ]
+    }
+  ],
+  "currency": [
+    {
+      "key": "starter",
+      "name": "Starter Pack",
+      "amount": "10,000 Coins",
+      "price": "$3.99",
+      "tone": "neutral"
+    },
+    {
+      "key": "value",
+      "name": "Value Pack",
+      "amount": "30,000 Coins",
+      "price": "$8.99",
+      "tone": "info",
+      "bonus": "+15% bonus",
+      "featured": true
+    },
+    {
+      "key": "mega",
+      "name": "Mega Pack",
+      "amount": "75,000 Coins",
+      "price": "$18.99",
+      "tone": "primary",
+      "bonus": "+25% bonus"
+    },
+    {
+      "key": "ultimate",
+      "name": "Ultimate Pack",
+      "amount": "200,000 Coins",
+      "price": "$39.99",
+      "tone": "pink",
+      "bonus": "+40% bonus"
+    }
+  ]
+}

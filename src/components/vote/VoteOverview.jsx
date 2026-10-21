@@ -36,7 +36,7 @@ export default function VoteOverview() {
     let isMounted = true;
     fetchVoteStats().then((data) => {
       if (isMounted) setStats(data);
-    });
+    }).catch(() => {});
     return () => {
       isMounted = false;
     };
@@ -64,7 +64,7 @@ export default function VoteOverview() {
         </PixelBox>
       </div>
 
-      <PixelBox tone="success" className="mt-8" contentClassName="flex flex-col items-center gap-3">
+      {stats?.weeklyGoal && <PixelBox tone="success" className="mt-8" contentClassName="flex flex-col items-center gap-3">
         <h2 className="text-[15px] green-gradient-text">Weekly Server Goal</h2>
 
         {stats && (
@@ -90,7 +90,7 @@ export default function VoteOverview() {
         <p className="p">
           Help us reach our weekly goal to unlock a special event for everyone!
         </p>
-      </PixelBox>
+      </PixelBox>}
 
       {stats && (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">

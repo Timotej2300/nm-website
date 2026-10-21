@@ -2,6 +2,8 @@
 
 A complete, standalone website for a Minecraft survival server community — a pixel-art homepage, a donation store, a voting hub, a staff roster, a news blog, a cart, and Microsoft/Xbox sign-in, all built and wired together as a single React SPA.
 
+> **Backend & admin (added):** the site now has a real login (AuthMe / e-mail), roles and permissions, a `/admin` panel, a ticket system, page switches and Maintenance Mode. Setup, env variables and hosting: see [`docs/DEPLOY.md`](docs/DEPLOY.md), [`docs/PLUGIN_SPEC.md`](docs/PLUGIN_SPEC.md) and `.env.example`. The "Auth" notes below describe the old mock and are superseded.
+
 **🔗 Live demo:** https://minecraft-01.vercel.app/
 
 ## Features

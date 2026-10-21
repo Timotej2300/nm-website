@@ -1,3 +1,4 @@
+import { api, errorMessage } from "../lib/api";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -161,10 +162,21 @@ export default function Cart() {
   useSeo({ title: "Your Cart", path: "/cart", noindex: true });
   const { items, count, subtotal, clearCart } = useCart();
   const [placed, setPlaced] = useState(false);
+  const [checkout, setCheckout] = useState({ busy: false, error: null });
 
-  const handleCheckout = () => {
-    setPlaced(true);
-    clearCart();
+  // Prices are re-read on the server; no payment is ever faked.
+  const handleCheckout = async () => {
+    setCheckout({ busy: true, error: null });
+    try {
+      await api.post("/store/checkout", {
+        items: items.map((i) => ({ key: i.id.replace(/^(rank|crate|currency)-/, ""), qty: i.qty })),
+      });
+      setPlaced(true);
+      clearCart();
+      setCheckout({ busy: false, error: null });
+    } catch (e) {
+      setCheckout({ busy: false, error: errorMessage(e) });
+    }
   };
 
   return (
@@ -219,13 +231,18 @@ export default function Cart() {
               icon={CheckCircle2}
               className="mt-1 w-full py-5!"
               onClick={handleCheckout}
+              disabled={checkout.busy}
             >
-              Checkout
+              {checkout.busy ? "Checking…" : "Checkout"}
             </PixelButton>
+            {checkout.error && (
+              <p role="alert" className="text-center text-[11px] leading-relaxed text-(--color-warning)">
+                {checkout.error}
+              </p>
+            )}
 
             <p className="text-center text-[10.5px] leading-relaxed text-(--color-text-dim)">
-              Instant in-game delivery after checkout — no real payment is
-              processed on this preview store.
+              Online payments are not active yet. Nothing is charged and no order is created until a payment provider is connected.
             </p>
           </PixelBox>
         </div>

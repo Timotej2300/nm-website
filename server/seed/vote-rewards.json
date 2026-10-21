@@ -1,0 +1,22 @@
+[
+  {
+    "votes": 1,
+    "label": "1 Votes",
+    "reward": "1 Vote Key, 550 XP Points, 1000 Game Money, 1 Vote Point"
+  },
+  {
+    "votes": 5,
+    "label": "5 Votes",
+    "reward": "1 Rare Crate Key, 3000 XP Points, 5000 Game Money, 5 Vote Points"
+  },
+  {
+    "votes": 10,
+    "label": "10 Votes",
+    "reward": "1 Epic Crate Key, 7500 XP Points, 12000 Game Money, 10 Vote Points"
+  },
+  {
+    "votes": 25,
+    "label": "25 Votes",
+    "reward": "1 Legendary Crate Key, 20000 XP Points, 30000 Game Money, 25 Vote Points"
+  }
+]

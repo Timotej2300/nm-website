@@ -2,7 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { Calendar, ArrowLeft, User } from "lucide-react";
 import PixelBox from "../components/ui/PixelBox";
 import PixelButton from "../components/ui/PixelButton";
-import { newsPosts, getPostBySlug } from "../data/news";
+import { useApi } from "../hooks/useApi";
+import { ErrorBox, Loading } from "../components/ui/Form";
 import { useSeo } from "../hooks/useSeo";
 
 function ContentBlock({ block }) {
@@ -42,19 +43,23 @@ function ContentBlock({ block }) {
 
 export default function NewsDetails() {
   const { slug } = useParams();
-  const post = getPostBySlug(slug);
+  const { data, error, loading, reload } = useApi(`/news/${encodeURIComponent(slug)}`);
+  const post = data?.post;
+  const list = useApi("/news?limit=6");
 
   useSeo(
     post
       ? {
-          title: post.title,
-          description: post.excerpt,
+          title: post.seoTitle || post.title,
+          description: post.seoDescription || post.excerpt,
           path: `/news/${post.slug}`,
           image: post.image,
         }
       : { title: "Post Not Found", path: `/news/${slug}`, noindex: true },
   );
 
+  if (loading) return <Loading />;
+  if (error && !/nenájdená|not.?found/i.test(error) && !post) return <ErrorBox message={error} onRetry={reload} />;
   if (!post) {
     return (
       <section className="mx-auto max-w-3xl px-4 flex h-screen flex-col items-center justify-center text-center sm:px-6">
@@ -75,7 +80,7 @@ export default function NewsDetails() {
     );
   }
 
-  const related = newsPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const related = (list.data?.posts || []).filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 ">
@@ -88,6 +93,7 @@ export default function NewsDetails() {
         </PixelButton>
       </Link>
 
+      {post.image && (
       <div className="w-full mt-6 rounded-lg overflow-hidden bg-(--color-bg-soft)">
         <img
           src={post.image}
@@ -95,6 +101,7 @@ export default function NewsDetails() {
           className="h-full w-full object-cover [image-rendering:pixelated]"
         />
       </div>
+      )}
 
       <div className="mt-6 flex flex-wrap items-center gap-4">
         <span
