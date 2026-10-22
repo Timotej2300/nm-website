@@ -25,13 +25,14 @@ Supported hashes: SHA256 (`$SHA$`), BCRYPT, ARGON2, PBKDF2 (best effort). Unknow
 
 ## 4. First owner
 1. Set `OWNER_MINECRAFT_UUID` (X4yl0n's UUID).
-2. Sign in with the Minecraft nick + AuthMe password.
-3. In-game run `/web link` (plugin per `docs/PLUGIN_SPEC.md`), enter the code in Účet. If the UUID matches, the Owner role is granted. There is no backdoor and no nick-only owner.
-4. Create other roles/users in `/admin`. Admins cannot change the Owner or grant rights above their own priority.
+2. Install the plugin from `minecraft-plugin/` on the Minecraft server (see its README) and set its `api-url` and `api-key` (= `PLUGIN_API_SECRET`).
+3. In-game run `/weblink`, then on the site choose the tab "Kód z hry" and enter the code. No password is needed. If the UUID equals `OWNER_MINECRAFT_UUID`, the Owner role is granted. There is no backdoor and no nick-only owner.
+4. Under Účet set your e-mail and a web password (first setup asks for no current password); after verifying the e-mail you can also sign in with e-mail + password. AuthMe (`AUTHME_*`) is then optional - it is only needed for the "nick + Minecraft password" login.
+5. Create other roles/users in `/admin`. Admins cannot change the Owner or grant rights above their own priority.
 
 ## 5. Not implemented / needs your input
 - **Payments**: no gateway is connected. Checkout answers “not active” and creates no order. Integrate a provider, then set `PAYMENT_PROVIDER`.
-- **Plugin side** (`/web link`, Votifier listener): only the web API exists — see `docs/PLUGIN_SPEC.md`.
+- **Plugin** `minecraft-plugin/` (WebLink): written but not compiled/tested on a real server by me (no Maven access here). A GitHub Action builds the jar. A Votifier listener for votes does not exist; only the API (`docs/PLUGIN_SPEC.md`).
 - **SMTP**: required for e-mail linking/reset. Without `SMTP_URL` these features report that mail is not configured.
 - Online status of staff is not shown (no live server link).
 

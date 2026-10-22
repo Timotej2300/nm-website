@@ -15,9 +15,17 @@ import { isMailConfigured, sendMail, link } from "../lib/mailer.js";
 
 // Sensitive account changes require the current password again, so a stolen
 // session cookie alone cannot take over an account.
+const FRESH_SESSION_MS = 30 * 60_000;
+
 async function reauthenticate(ctx, password) {
   await enforce(`reauth:${ctx.user.id}`, 10, 15 * 60_000, "Príliš veľa pokusov o overenie hesla.");
   const row = await queryOne("SELECT authme_username, web_password_hash FROM nm_users WHERE id = ?", [ctx.user.id]);
+  // First-time setup for an account that came in with the in-game code (so it has NO password
+  // of any kind yet): the fresh sign-in is the proof. Accounts with an AuthMe password always
+  // confirm with it; once a web password exists, or after 30 minutes, the password is required.
+  const fresh = Number(ctx.session.session_age_sec) * 1000 < FRESH_SESSION_MS;
+  if (!row.web_password_hash && !row.authme_username && fresh) return;
+  if (!password) throw forbidden("Zadajte aktuálne heslo.", "invalid_password");
   if (row.web_password_hash && (await verifyWebPassword(row.web_password_hash, password))) return;
   if (row.authme_username) {
     try {
@@ -35,6 +43,8 @@ get("/account", async (ctx) => {
     user: toPublicUser(ctx.user, ctx.profile),
     sessions: await countActiveSessions(ctx.user.id),
     mailConfigured: isMailConfigured(),
+    // Accounts created with the in-game code have no password at all yet: first setup needs none.
+    setupWithoutPassword: !ctx.profile.has_web_password && !ctx.profile.authme_username,
   };
 });
 
@@ -83,7 +93,7 @@ post("/account/link", async (ctx) => {
 
 const emailChangeSchema = z.object({
   email: emailSchema,
-  currentPassword: z.string().min(1).max(256),
+  currentPassword: z.string().max(256).optional(),
   webPassword: z.string().max(256).optional(),
 });
 
@@ -100,7 +110,7 @@ post("/account/email", async (ctx) => {
     throw badRequest("Zvoľte webové heslo (iné než heslo do Minecraftu).", "web_password_required");
   }
   if (input.webPassword) {
-    if (input.webPassword === input.currentPassword && !me.web_password_hash) {
+    if (input.currentPassword && input.webPassword === input.currentPassword && !me.web_password_hash) {
       throw badRequest("Webové heslo musí byť iné než heslo do Minecraftu.", "same_password");
     }
     const problem = checkWebPassword(input.webPassword, { name: me.minecraft_name, email: input.email });

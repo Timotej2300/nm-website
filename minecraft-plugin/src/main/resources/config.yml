@@ -1,0 +1,30 @@
+# WebLink - one-time sign-in codes for your website.
+
+# Base URL of the website API (no trailing slash), e.g. https://ninjamelon.cz/api
+api-url: "https://ninjamelon.cz/api"
+
+# The same value as PLUGIN_API_SECRET on the website. Keep it secret, never share this file.
+api-key: "CHANGE_ME"
+
+# Shown to the player.
+site-url: "https://ninjamelon.cz"
+
+# Seconds a player must wait between two codes.
+cooldown-seconds: 20
+
+# Safety: a code proves WHO the player is, so the server must really know that.
+# - AuthMe installed: the player must be logged in with AuthMe (checked automatically).
+# - Online-mode server: Mojang already proved the identity.
+# - Offline-mode backend server behind a proxy (Velocity/Bungee) that is itself in online mode:
+#   set this to true. NEVER set it to true on a cracked server without AuthMe.
+trust-proxy-authentication: false
+
+messages:
+  prefix: "&8[&6Web&8] &7"
+  code: "Tvoj kód na prihlásenie: &e&l%code% &7(platí %minutes% min, použiť sa dá raz)"
+  open: "Zadaj ho na &b%site%"
+  cooldown: "Počkaj ešte %seconds% s a skús to znova."
+  not-logged-in: "&cNajprv sa prihlás do hry (/login)."
+  unsafe: "&cTento server nevie overiť tvoju identitu, kód nemožno vydať."
+  error: "&cKód sa nepodarilo získať. Skús to neskôr alebo kontaktuj tím."
+  players-only: "Príkaz môže použiť iba hráč."

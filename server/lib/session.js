@@ -55,7 +55,7 @@ export async function createSession(userId, { remember, ip, userAgent }) {
 export async function loadSession(token) {
   if (!token || typeof token !== "string" || token.length < 20 || token.length > 100) return null;
   const row = await queryOne(
-    `SELECT s.id AS session_id, s.user_id, s.remember, s.last_seen_at,
+    `SELECT s.id AS session_id, s.user_id, s.remember, s.last_seen_at, TIMESTAMPDIFF(SECOND, s.created_at, NOW()) AS session_age_sec,
             u.authme_username, u.minecraft_name, u.minecraft_uuid, u.email, u.email_verified_at,
             u.status, u.web_password_hash IS NOT NULL AS has_web_password
        FROM nm_sessions s

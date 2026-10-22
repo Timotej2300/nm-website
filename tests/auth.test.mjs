@@ -244,3 +244,49 @@ test("audit log never contains passwords, hashes or tokens", async () => {
   }
   assert.ok(rows.some((r) => r.action === "auth.login") && rows.some((r) => r.action === "auth.login_failed"));
 });
+
+test("sign-in with the /weblink code: no password, single-use, then e-mail + web password setup", async () => {
+  const uuid = "abcdefab-1111-2222-3333-444444444444";
+  const code = await pluginLinkCode(uuid, "Code_Cora");
+  const c = new Client();
+  const bad = await c.post("/auth/code-login", { code, ...(await c.captcha()) , captchaAnswer: "WRONG" });
+  assert.equal(bad.status >= 400, true, "captcha is required");
+  const ok = await c.post("/auth/code-login", { code: code.toLowerCase(), ...(await c.captcha()) });
+  assert.equal(ok.status, 200);
+  assert.equal(ok.data.user.name, "Code_Cora");
+  assert.equal(ok.data.user.uuidLinked, true);
+  assert.equal((await c.get("/account")).status, 200);
+  const again = await new Client().post("/auth/code-login", { code, ...(await new Client().captcha()) });
+  assert.equal(again.status, 401, "code is single-use");
+  const none = new Client();
+  assert.equal((await none.post("/auth/code-login", { code: "ZZZZZZZZ", ...(await none.captcha()) })).status, 401);
+  // first-time setup without any current password
+  outbox.length = 0;
+  const weak = await c.post("/account/email", { email: "cora@example.com", webPassword: "short" });
+  assert.equal(weak.status, 400);
+  const set = await c.post("/account/email", { email: "cora@example.com", webPassword: "Cora-web-pass-1" });
+  assert.equal(set.status, 200);
+  const token = outbox[0].text.match(/token=([\w-]+)/)[1];
+  assert.equal((await new Client().post("/auth/verify-email", { token })).status, 200);
+  assert.equal((await new Client().login("cora@example.com", "Cora-web-pass-1")).status, 200);
+  // from now on a password is required to change things, even in the same session
+  const change = await c.post("/account/email", { email: "other@example.com", webPassword: "Another-web-pass-1" });
+  assert.equal(change.status, 403);
+  // the same UUID signs into the same account again (name refreshed)
+  const code2 = await pluginLinkCode(uuid, "Code_Cora2");
+  const c2 = new Client();
+  const r2 = await c2.post("/auth/code-login", { code: code2, ...(await c2.captcha()) });
+  assert.equal(r2.data.user.id, ok.data.user.id);
+  assert.equal(r2.data.user.name, "Code_Cora2");
+});
+
+test("owner role via /weblink code needs the exact owner UUID", async () => {
+  const fake = await pluginLinkCode("99999999-0000-0000-0000-000000000001", "X4yl0n");
+  const f = new Client();
+  const rf = await f.post("/auth/code-login", { code: fake, ...(await f.captcha()) });
+  assert.equal(rf.data.user.roles.some((r) => r.key === "owner"), false, "same nick, other UUID: no owner");
+  const real = await pluginLinkCode(OWNER_UUID, "X4yl0n");
+  const o = new Client();
+  const ro = await o.post("/auth/code-login", { code: real, ...(await o.captcha()) });
+  assert.equal(ro.data.user.roles.some((r) => r.key === "owner"), true);
+});

@@ -47,7 +47,7 @@ function LinkAccount({ account, onDone }) {
         <p className="text-[12px] text-(--color-text-muted)"><Badge tone="green">prepojené</Badge> UUID: <span className="text-(--color-text)">{account.uuid}</span></p>
       ) : (
         <form onSubmit={submit} className="flex flex-col gap-3">
-          <p className="text-[11.5px] leading-relaxed text-(--color-text-muted)">V hre napíšte <b className="text-(--color-text)">/web link</b> — dostanete jednorazový kód s krátkou platnosťou. Zadajte ho sem; účet sa naviaže na váš stabilný Minecraft UUID.</p>
+          <p className="text-[11.5px] leading-relaxed text-(--color-text-muted)">V hre napíšte <b className="text-(--color-text)">/weblink</b> — dostanete jednorazový kód s krátkou platnosťou. Zadajte ho sem; účet sa naviaže na váš stabilný Minecraft UUID.</p>
           <Field label="Kód z hry"><TextInput value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" autoCapitalize="characters" maxLength={32} /></Field>
           <Msg s={s} />
           <Save busy={s.busy || !code.trim()}>Prepojiť</Save>
@@ -57,12 +57,12 @@ function LinkAccount({ account, onDone }) {
   );
 }
 
-function EmailBox({ account, mailConfigured }) {
+function EmailBox({ account, mailConfigured, setupWithoutPassword }) {
   const [f, setF] = useState({ email: "", current: "", web: "" });
   const [s, run] = useSubmit();
   const submit = async (e) => {
     e.preventDefault();
-    await run(() => api.post("/account/email", { email: f.email.trim(), currentPassword: f.current, ...(f.web ? { webPassword: f.web } : {}) }), (r) => r.message);
+    await run(() => api.post("/account/email", { email: f.email.trim(), ...(f.current ? { currentPassword: f.current } : {}), ...(f.web ? { webPassword: f.web } : {}) }), (r) => r.message);
     setF({ ...f, current: "", web: "" });
   };
   return (
@@ -78,9 +78,11 @@ function EmailBox({ account, mailConfigured }) {
           {!account.hasWebPassword && (
             <Field label="Webové heslo (iné ako do Minecraftu)" hint="Min. 10 znakov. Použijete ho pri prihlásení e‑mailom."><TextInput type="password" value={f.web} onChange={(e) => setF({ ...f, web: e.target.value })} autoComplete="new-password" maxLength={256} /></Field>
           )}
-          <Field label="Aktuálne heslo (potvrdenie)"><TextInput type="password" value={f.current} onChange={(e) => setF({ ...f, current: e.target.value })} autoComplete="current-password" maxLength={256} /></Field>
+          {!setupWithoutPassword && (
+            <Field label="Aktuálne heslo (potvrdenie)"><TextInput type="password" value={f.current} onChange={(e) => setF({ ...f, current: e.target.value })} autoComplete="current-password" maxLength={256} /></Field>
+          )}
           <Msg s={s} />
-          <Save busy={s.busy || !f.email || !f.current}>Poslať overovací e‑mail</Save>
+          <Save busy={s.busy || !f.email || (!setupWithoutPassword && !f.current) || (!account.hasWebPassword && !f.web)}>Poslať overovací e‑mail</Save>
         </form>
       )}
     </Box>
@@ -152,7 +154,7 @@ export default function Account() {
             <p className="text-[11.5px] text-(--color-text-muted)">Roly: {data.user.roles.map((r) => r.name).join(", ") || "—"}</p>
           </Box>
           <LinkAccount account={data.user} onDone={reload} />
-          <EmailBox account={data.user} mailConfigured={data.mailConfigured} />
+          <EmailBox account={data.user} mailConfigured={data.mailConfigured} setupWithoutPassword={data.setupWithoutPassword} />
           <PasswordBox account={data.user} />
           <Sessions />
         </>

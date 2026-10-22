@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
   }, [refreshSite, refreshUser]);
 
   const login = useCallback(async (payload) => {
-    const r = await api.post("/auth/login", payload);
+    const r = await api.post(payload.code ? "/auth/code-login" : "/auth/login", payload);
     setUser(withAvatar(r.user));
     refreshSite();
     return r.user;

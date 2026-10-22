@@ -5,7 +5,7 @@ import { createCaptcha, verifyCaptcha } from "../lib/captcha.js";
 import { enforce, clear } from "../lib/ratelimit.js";
 import { hashIp, sha256Hex, randomToken, hashWebPassword, verifyWebPassword, burnPasswordCheck } from "../lib/crypto.js";
 import { verifyMinecraftLogin } from "../lib/authme.js";
-import { upsertAuthmeUser, ensureOwner, toPublicUser } from "../lib/users.js";
+import { upsertAuthmeUser, upsertCodeUser, ensureOwner, toPublicUser } from "../lib/users.js";
 import { createSession, sessionCookie, revokeSession, revokeAllSessions } from "../lib/session.js";
 import { loadActor } from "../lib/perms.js";
 import { syncStaffForUser } from "../lib/staff.js";
@@ -102,6 +102,61 @@ post("/auth/login", { public: true }, async (ctx) => {
 
   const actor = await loadActor(user);
   await audit(ctx, "auth.login", { targetType: "user", targetId: user.id, summary: `Prihlásenie (${isEmail ? "e-mail" : "Minecraft"}${input.remember ? ", zapamätať" : ""})`, actor });
+  return {
+    user: toPublicUser(actor, {
+      minecraft_uuid: user.minecraft_uuid,
+      email: user.email,
+      email_verified_at: user.email_verified_at,
+      has_web_password: Boolean(user.web_password_hash),
+    }),
+  };
+});
+
+// ── sign-in with the one-time code from `/weblink` (no password at all) ──
+
+const codeLoginSchema = z.object({
+  code: z.string().trim().min(4).max(32),
+  remember: z.boolean().optional().default(false),
+  captchaId: z.string(),
+  captchaAnswer: z.string().min(1).max(16),
+});
+
+post("/auth/code-login", { public: true }, async (ctx) => {
+  const input = parseInput(codeLoginSchema, ctx.body);
+  await enforce(`codelogin:ip:${hashIp(ctx.ip)}`, 20, 15 * 60_000);
+  await verifyCaptcha(input.captchaId, input.captchaAnswer);
+
+  const fail = async () => {
+    await audit(ctx, "auth.login_failed", { targetType: "login", summary: "Neúspešné prihlásenie kódom" });
+    throw unauthorized("Kód je neplatný alebo vypršal. V hre napíšte /weblink pre nový.", "invalid_code");
+  };
+  const normalized = input.code.toUpperCase().replace(/[\s-]/g, "");
+  const row = await queryOne(
+    "SELECT * FROM nm_link_codes WHERE code_hash = ? AND used_at IS NULL AND expires_at > UTC_TIMESTAMP()",
+    [sha256Hex(normalized)],
+  );
+  if (!row) return fail();
+  // Single use: only one request can flip used_at.
+  const used = await exec("UPDATE nm_link_codes SET used_at = UTC_TIMESTAMP() WHERE id = ? AND used_at IS NULL", [row.id]);
+  if (used.affectedRows !== 1) return fail();
+
+  const user = await upsertCodeUser(row.minecraft_uuid, row.minecraft_name);
+  if (user.status !== "active") {
+    await audit(ctx, "auth.login_blocked", { targetType: "user", targetId: user.id, summary: `Zablokovaný účet ${user.minecraft_name}` });
+    throw new HttpError(403, "account_suspended", "Tento účet je pozastavený.");
+  }
+  if (await ensureOwner(user)) {
+    await audit(ctx, "owner.bootstrap", { targetType: "user", targetId: user.id, summary: `Rola owner pridelená (${user.minecraft_name})`, actor: { id: user.id, name: user.minecraft_name } });
+  }
+  await syncStaffForUser(user.id);
+
+  if (ctx.session) await revokeSession(ctx.session.session_id);
+  const s = await createSession(user.id, { remember: input.remember, ip: ctx.ip, userAgent: ctx.userAgent });
+  ctx.setCookie(sessionCookie(s.token, { remember: input.remember }));
+  await exec("UPDATE nm_users SET last_login_at = UTC_TIMESTAMP() WHERE id = ?", [user.id]);
+
+  const actor = await loadActor(user);
+  await audit(ctx, "auth.login", { targetType: "user", targetId: user.id, summary: `Prihlásenie (kód z hry${input.remember ? ", zapamätať" : ""})`, actor });
   return {
     user: toPublicUser(actor, {
       minecraft_uuid: user.minecraft_uuid,

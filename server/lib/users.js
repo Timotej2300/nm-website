@@ -26,6 +26,43 @@ export async function upsertAuthmeUser(realname) {
 }
 
 /**
+ * Account for a player who proved their identity in-game with a one-time
+ * `/weblink` code. The stable UUID is the identity; the name is refreshed on
+ * every login. An older AuthMe-created account with the same name and no UUID
+ * yet is adopted (it belongs to the same person: the plugin only hands codes
+ * to authenticated players). No public registration exists - a code can only
+ * come from the plugin, which is authenticated with PLUGIN_API_SECRET.
+ */
+export async function upsertCodeUser(uuid, name) {
+  let user = await queryOne("SELECT * FROM nm_users WHERE minecraft_uuid = ?", [uuid]);
+  if (!user) {
+    const legacy = await queryOne(
+      "SELECT * FROM nm_users WHERE authme_username = ? AND minecraft_uuid IS NULL",
+      [name.toLowerCase()],
+    );
+    if (legacy) {
+      await exec("UPDATE nm_users SET minecraft_uuid = ? WHERE id = ? AND minecraft_uuid IS NULL", [uuid, legacy.id]);
+      user = await queryOne("SELECT * FROM nm_users WHERE id = ?", [legacy.id]);
+    }
+  }
+  if (!user) {
+    try {
+      const res = await exec("INSERT INTO nm_users (authme_username, minecraft_name, minecraft_uuid) VALUES (NULL, ?, ?)", [name, uuid]);
+      await exec("INSERT IGNORE INTO nm_user_roles (user_id, role_key) VALUES (?, 'user')", [res.insertId]);
+      user = await queryOne("SELECT * FROM nm_users WHERE id = ?", [res.insertId]);
+    } catch (e) {
+      if (e?.code !== "ER_DUP_ENTRY") throw e;
+      user = await queryOne("SELECT * FROM nm_users WHERE minecraft_uuid = ?", [uuid]);
+    }
+  }
+  if (user && user.minecraft_name !== name) {
+    await exec("UPDATE nm_users SET minecraft_name = ? WHERE id = ?", [name, user.id]);
+    user.minecraft_name = name;
+  }
+  return user;
+}
+
+/**
  * Owner bootstrap: the account whose *verified* Minecraft UUID equals
  * OWNER_MINECRAFT_UUID holds the `owner` role. The UUID only gets attached
  * to a web account through the one-time in-game link code, so a nick alone
