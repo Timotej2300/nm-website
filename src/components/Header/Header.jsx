@@ -27,7 +27,7 @@ export default function Header() {
   const { count } = useCart();
   const { user, logout } = useAuth();
   const items = user
-    ? [...navItems, ...(user.isStaff ? [{ to: "/admin", label: "Admin" }] : [])]
+    ? [...navItems, ...(user.isStaff ? [{ to: "/admin", label: "Administráce" }] : [])]
     : navItems;
 
   // close the mobile panel whenever the route changes (derived during render,

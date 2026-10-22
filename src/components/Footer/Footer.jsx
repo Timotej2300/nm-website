@@ -4,21 +4,21 @@ import "./Footer.css";
 
 const columns = [
   {
-    heading: "Product",
+    heading: "Produkty",
     links: [
-      { label: "News", to: "/news" },
-      { label: "Vote", to: "/votes" },
-      { label: "Store", to: "/store" },
-      { label: "Ranks", to: "/ranks" },
+      { label: "Novinky", to: "/news" },
+      { label: "Hlasovaní", to: "/votes" },
+      { label: "Obchod", to: "/store" },
+      { label: "Ranky", to: "/ranks" },
     ],
   },
   {
-    heading: "Company",
+    heading: "Server",
     links: [
-      { label: "Staff", to: "/staff" },
-      { label: "Support", to: "/support" },
+      { label: "Tím", to: "/staff" },
+      { label: "Pomoc", to: "/support" },
       { label: "Terms", to: "/terms" },
-      { label: "Privacy", to: "/privacy" },
+      { label: "Súkromí", to: "/privacy" },
     ],
   },
 ];
@@ -35,8 +35,8 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="site-footer__inner">
         <div className="site-footer__brand">
-          <span className="site-footer__logo">CRAFTVERSE</span>
-          <p className="site-footer__tagline">The Minecraft client built for every player.</p>
+          <span className="site-footer__logo">NINJAMELON.CZ</span>
+          <p className="site-footer__tagline">Minecraft server pre každeho.</p>
           <div className="site-footer__socials">
             {socials.map(({ icon: Icon, label, href }) => (
               <a key={label} href={href} aria-label={label} className="site-footer__social">
@@ -61,7 +61,7 @@ export default function Footer() {
       </div>
 
       <div className="site-footer__bottom">
-        <span>&copy; {new Date().getFullYear()} Craftverse. All rights reserved.</span>
+        <span>&copy; {new Date().getFullYear()} NinjaMelon.cz | Všetky práva vyhradene | By <a href="https://x4yl0n.vercel.app">X4yl0n</a> .</span>
       </div>
     </footer>
   );
