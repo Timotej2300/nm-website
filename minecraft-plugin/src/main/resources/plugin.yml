@@ -2,7 +2,7 @@ name: WebLink
 main: cz.ninjamelon.weblink.WebLinkPlugin
 version: '${project.version}'
 api-version: '1.13'
-author: NinjaMelon
+author: X4yl0n
 description: /weblink gives a one-time code to sign in to the website.
 softdepend: [AuthMe]
 commands:

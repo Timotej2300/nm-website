@@ -11,7 +11,7 @@ export default function Logo() {
     >
       <img src="/favicon.svg" alt="" className="h-4.5 w-4.5" />
       <span className="hidden whitespace-nowrap gold-gradient-text text-[14px] sm:inline">
-        BDZONE
+        NINJAMELON
       </span>
     </Link>
   );
